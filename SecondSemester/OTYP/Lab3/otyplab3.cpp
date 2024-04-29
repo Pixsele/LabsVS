@@ -12,23 +12,12 @@ enum AState { S, A, B, R, Q, P, R2, P2, Q2, E, E2,C,C2,R3,R4,R5, F };
 //типы символом
 enum Symbols { alfa, digit, lef,prav, eqq, pm, space, other,scc };
 
-<<<<<<< HEAD
 //массив для текстово обозначения типов лексем
 const char* type_word[8] = { "kw","vl","id","co","eq","ao","wl","sc"};
 //массив для ключевых слов
 const char* key_words[6] = { "do","loop","while","and","or","not"};
 
 //функция проверки на ключевое слово
-=======
-enum Type { kw, vl, id, co, eq, ao, wl,sc };
-enum AState { S, A, B, R, Q, P, R2, P2, Q2, E, E2,Rq,C,C2, F };
-enum Symbols { alfa, digit, lef,prav, eqq, pm, space, other,scc };
-
-
-const char* type_word[8] = { "kw","vl","id","co","eq","ao","wl","sc"};
-const char* key_words[6] = { "do","loop","while","and","or","not"};
-
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
 bool searc_kw(char* lex) {
     for (int i = 0; i < 6; i++) {
         if (strcmp(lex, key_words[i]) == 0) {
@@ -57,7 +46,6 @@ void new_table(AState(*table)[16]) {
     table[alfa][R4] = A;
     table[alfa][R5] = A;
 
-<<<<<<< HEAD
     table[digit][S] = B;
     table[digit][A] = A;
     table[digit][B] = B;
@@ -222,47 +210,6 @@ bool issc(char c) {
     return c == ';';
 }
 //функий для определения символа
-=======
-const AState state_table[9][14] = {
-    {A,A,E2,A,A,A,A,A,A,E,E2,A,A,A},
-    {B,A,B,B,B,B,B,B,B,E,E2,B,B,B},
-    {R,R,R,R2,R,R,R,R,R,R,R,R,R,R},
-    {R2,R2,R2,R,R2,R2,R,R2,R2,R2,R2,R2,R2,R2},
-    {Q,Q,Q,Rq,Q2,Q,Rq,R,Q,Q,Q,Q,Q,Q},
-    {P,P,P,P,P,P2,P,P,P,P,P,P,P,P},
-    {S,F,F,F,F,F,F,F,F,F,F,F,F,F},
-    {E,E2,E2,E,E,E,E,E,E,E,E2,E,E},
-    {C,C,C,C,C,C,C,C,C,C,C,C,C2,C}
-};
-
-struct Lex {
-
-    char* str;
-    Type type;
-
-};
-
-bool isprav(char c) {
-    return c == '>';
-}
-
-
-bool islef(char c) {
-    return c == '<';
-}
-
-bool iseq(char c) {
-    return c == '=';
-}
-
-bool ispm(char c) {
-    return (c == '+' || c == '-' || c == '/' || c == '*');
-}
-bool issc(char c) {
-    return c == ';';
-}
-
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
 Symbols wtfsymbol(char c) {
     if (isalpha(c)) return Symbols::alfa;
     else if (isdigit(c)) return Symbols::digit;
@@ -274,7 +221,6 @@ Symbols wtfsymbol(char c) {
     else if (issc(c)) return Symbols::scc;
     else return Symbols::other;
 }
-<<<<<<< HEAD
 //запись новой лексемы в вектор и определения типа лексемы
 void newstrlex(Lex& lexema, char*& text, int pos, int firstpos, Type tp, vector<Lex>& result) {
     int lenght = pos - firstpos;//считаем длину лексемы
@@ -292,33 +238,12 @@ void newstrlex(Lex& lexema, char*& text, int pos, int firstpos, Type tp, vector<
         lexema.type = Type::wl;
     }
     //проверка на ключевое слово
-=======
-
-void newstrlex(Lex& lexema, char*& text, int pos, int firstpos, Type tp, vector<Lex>& result) {
-    int lenght = pos - firstpos;//считаем длину лексемы
-    lexema.str = new char[lenght];
-    strncpy(&lexema.str[0], &text[0] + firstpos, lenght);//записываем всё в lexema
-    lexema.str[lenght] = '\0';
-
-
-    lexema.type = tp;
-
-    if (lexema.type == Type::id && lenght > 5) {
-        lexema.type = Type::wl;
-    }
-
-    if (lexema.type == Type::vl && atoi(lexema.str) > 32767) {
-        lexema.type = Type::wl;
-    }
-
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
     if (lexema.type == Type::id && searc_kw(lexema.str)) {
         lexema.type = Type::kw;
     }
 
     result.push_back(lexema);//добаляем в вектор с результами
 }
-<<<<<<< HEAD
 //анализатор
 void Steps(char* text, vector<Lex>& result, AState (*state_table)[16]) {
     int pos = 0; //позиция в тексте
@@ -358,80 +283,26 @@ void Steps(char* text, vector<Lex>& result, AState (*state_table)[16]) {
             case AState::R4:
             case AState::R5:{
                 newstrlex(lexema, text, pos, temppos, Type::co, result); //если сравнение
-=======
-
-vector<Lex> Steps(char* text) {
-    vector<Lex> result;
-    int pos = 0;
-    AState state = AState::S;
-    AState prevstate = state;
-    Lex lexema;
-    int firstpos;
-    do {
-        char curChar = text[pos];
-
-        if (state == AState::S && !isspace(curChar)) {
-            firstpos = pos;
-        }
-        prevstate = state;
-        state = state_table[wtfsymbol(curChar)][state];
-
-        if (prevstate != AState::S && state != AState::S && prevstate != state && state != AState::E2 && state != AState::Rq) {
-            int temppos = firstpos;
-            firstpos = pos;
-            switch (prevstate) {
-            case A: {
-                newstrlex(lexema, text, pos, temppos, Type::id, result);
-                break;
-            }
-            case B: {
-                newstrlex(lexema, text, pos, temppos, Type::vl, result);
-                break;
-            }
-            case AState::R:
-            case AState::R2: {
-                newstrlex(lexema, text, pos, temppos, Type::co, result);
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
                 break;
             }
             case AState::Q:
             case AState::Q2: {
-<<<<<<< HEAD
                 newstrlex(lexema, text, pos, temppos, Type::eq, result); //если равно
-=======
-                newstrlex(lexema, text, pos, temppos, Type::eq, result);
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
                 break;
             }
             case AState::P:
             case AState::P2: {
-<<<<<<< HEAD
                 newstrlex(lexema, text, pos, temppos, Type::ao, result); //если арифм. знаки
-=======
-                newstrlex(lexema, text, pos, temppos, Type::ao, result);
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
                 break;
             }
             case AState::E:
             case AState::E2: {
-<<<<<<< HEAD
                 newstrlex(lexema, text, pos, temppos, Type::wl, result); //если ошибочный символ
-=======
-                newstrlex(lexema, text, pos, temppos, Type::wl, result);
-                break;
-            }
-            case AState::Rq: {
-                newstrlex(lexema, text, pos, temppos, Type::co, result);
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
                 break;
             }
             case AState::C:
             case AState::C2: {
-<<<<<<< HEAD
                 newstrlex(lexema, text, pos, temppos, Type::sc, result); //если точка с запятой
-=======
-                newstrlex(lexema, text, pos, temppos, Type::sc, result);
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
                 break;
             }
 
@@ -439,34 +310,17 @@ vector<Lex> Steps(char* text) {
             case F:
                 break;
             }
-<<<<<<< HEAD
             //если конечной состояние то переходим в начальное
-=======
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
             if (state == AState::F) {
                 state = AState::S;
             }
         }
         pos++;
-<<<<<<< HEAD
     } while (text[pos - 1] != '\0');
 }
 
 //фунция для инициализации текста из файла
 char* textinit(ifstream& in) {
-=======
-
-    } while (text[pos - 1] != '\0');
-
-    return result;
-}
-
-
-char* textinit() {
-    //отрытие файлов для чтения и записи
-    ifstream in("input.txt");
-
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
     //узанем размер файла
     in.seekg(0, ios::end); //перемещаем в конец файла указатель
     streampos filesize = in.tellg(); //узнаем текущую позицию указателя - размер файла
@@ -478,64 +332,37 @@ char* textinit() {
     char* str = new char[size + 1];
 
     //считываем строку
-<<<<<<< HEAD
     in.getline(str, size + 1, '\0');
     //закрытие файла
-=======
-    in.read(str, size);
-
-    str[size] = '\0';
-
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
     in.close();
 
     return str;
 }
-<<<<<<< HEAD
 //функция вывода результата
 void print(vector<Lex>& ans) {
     //отрытие файлов для записи
     ofstream out("output.txt");
     //выводим каждый элемент вектора особым образом
-=======
-
-void print(vector<Lex>& ans) {
-
-    ofstream out("output.txt");
-    vector<Lex> s;
-    //выводим каждый элемент вектора и очищаем память
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
     for (size_t i = 0; i < ans.size(); i++) {
         out << ans[i].str << "[" << type_word[ans[i].type] << "]" << ' ';
         cout << ans[i].str << "[" << type_word[ans[i].type] << "]" << ' ';
     };
     out << endl;
     cout << endl;
-<<<<<<< HEAD
     //вывод всех индификаторов
-=======
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
     for (size_t i = 0; i < ans.size(); i++) {
         if (ans[i].type == Type::id) {
             cout << ans[i].str << ' ';
             out << ans[i].str << ' ';
-<<<<<<< HEAD
-=======
-
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
         }
     }
     out << endl;
     cout << endl;
-<<<<<<< HEAD
     //вывод всех констант
-=======
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
     for (size_t i = 0; i < ans.size(); i++) {
         if (ans[i].type == Type::vl) {
             cout << ans[i].str << ' ';
             out << ans[i].str << ' ';
-<<<<<<< HEAD
         }
     }
     //закрытие файла
@@ -561,23 +388,5 @@ int main() {
         }
         //очистка памяти текста
         delete[] text;
-=======
-
-        }
-    }
-    out.close();
-
-}
-
-int main() {
-    char* text = textinit();
-
-    vector<Lex> ans = Steps(text);
-
-    print(ans);
-
-    for (size_t i = 0; i < ans.size(); i++) {
-        delete ans[i].str;
->>>>>>> c2434c52550529fe08aafbd24437ba02437968f6
     }
 }
