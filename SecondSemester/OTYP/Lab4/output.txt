@@ -1,2 +1,2 @@
-do[kw] d[id] d[eq] d[id] do a[id] do a=[id] d[id] d[co] 
-d d do a do a= d 
+do[do] a[id] =[eq] j[id] loop[lp] while[wh] a[id] <[co] 
+8 id vl 
